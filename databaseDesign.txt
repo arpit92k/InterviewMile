@@ -1,0 +1,3 @@
+InterviewMile:
+questions(id=int(10,AI),isMCQ=boolean(false),title=varchar(500),description=varcahr(5000,null))
+mcqOptions(id=int(10,AI),qid=int(10),option=varchar(500),isCorrect=boolean(false))
