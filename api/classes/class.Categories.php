@@ -18,9 +18,9 @@ class Categories{
 	 * @param integer $parentCategoryId
 	 * @return integer id of insterted category
 	 */
-	public function addCategory($category,$parentCategoryId=NULL){
-		$this->link->setQuery("INSERT INTO catrgories(`parentId`,`category`) VALUES(?,?)");
-		$this->link->bindParms(array($category,$parentCategoryId));
+	public function addCategory($category,$owner,$parentCategoryId=NULL){
+		$this->link->setQuery("INSERT INTO catrgories(`parentId`,`category`,`owner`) VALUES(?,?,?)");
+		$this->link->bindParms(array($category,$parentCategoryId,$owner));
 		return $this->link->executeInsertQuery();
 	}
 	/**
@@ -65,6 +65,14 @@ class Categories{
 			$result->append($res);
 		}
 		return $result;
+	}
+	public function isValidCategoryId($categoryId){
+		$this->link->setQuery("SELECT * FROM categories WHERE categoryId=?");
+		$this->link->bindParms(array($categoryId));
+		$qresult=$this->link->executeSelectQuery();
+		if($qresult->rowCount())
+			return true;
+		return false;
 	}
 }
 ?>

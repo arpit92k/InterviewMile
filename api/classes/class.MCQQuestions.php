@@ -14,7 +14,7 @@ class MCQQuestions extends Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$category_id=NULL){
+	public function addQuestion($title,$description,$owner,$category_id=NULL){
 		parent::addQuestion($title, $description,$category_id,true);
 	}
 	/**
@@ -24,9 +24,9 @@ class MCQQuestions extends Questions{
 	 * @param boolean $isCorrect
 	 * @return integer id of insterted value
 	 */
-	public function addChoice($questionID,$choice,$isCorrect=false){
-		$this->link->setQuery("INSERT INTO mcqChoices(`questionId`,`choice`,`isCorrect`) VALUES(?,?,?)");
-		$this->link->bindParms(array($questionID,$choice,$isCorrect));
+	public function addChoice($questionID,$choice,$owner,$isCorrect=false){
+		$this->link->setQuery("INSERT INTO mcqChoices(`questionId`,`choice`,`isCorrect`,`owner`) VALUES(?,?,?,?)");
+		$this->link->bindParms(array($questionID,$choice,$isCorrect,$owner));
 		return $this->link->executeInsertQuery();
 	}
 	/**

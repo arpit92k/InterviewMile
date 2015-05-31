@@ -8,6 +8,8 @@ include_once 'classes/class.NonMCQQuestions.php';
 include_once 'classes/class.Categories.php';
 include_once 'responces/class.UtilityFunctions.php';
 include_once 'responces/class.QuestionHandler.php';
+include_once 'responces/class.AnswerHandler.php';
+include_once 'responces/class.CategoryHandler.php';
 function handleRequest(){
 	if(isset($_GET['object'])){
 		if(!isset($_GET['query'])){
@@ -25,8 +27,9 @@ function handleRequest(){
 			elseif ($_GET['query']=="get"){
 				$questions->listQuestions($_POST);
 			}
-			else
+			else{
 				UtilityFunctions::responceBadRequest();
+			}
 		}
 		elseif ($_GET['object']=="answer"){
 			$answer=new AnswerHandler();

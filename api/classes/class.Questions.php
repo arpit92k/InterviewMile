@@ -21,10 +21,10 @@ class Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$category_id=NULL,$isMCQ=FALSE){
-		$this->link->setQuery("INSERT INTO questions (`categoryId`,`isMCQ`,`title`,`description`) VALUES (?,?,?,?)");
-		$this->link->bindParms(array($category_id,$isMCQ,$title,$description));
-		return $this->link->executeInsertQuery();
+	public function addQuestion($title,$description,$owner,$category_id=NULL,$isMCQ=FALSE){
+		$this->link->setQuery("INSERT INTO questions (`categoryId`,`isMCQ`,`title`,`description`,`owner`) VALUES (?,?,?,?,?)");
+		$this->link->bindParms(array($category_id,$isMCQ,$title,$description,$owner));
+		$result=$this->link->executeInsertQuery();
 	}
 	/**
 	 *
@@ -39,6 +39,26 @@ class Questions{
 			$result->append($res);
 		}
 		return $result;
+	}
+	public function isValidQuestionId($questionId){
+		$this->link->setQuery("SELECT * FROM questions WHERE questionId=?");
+		$this->link->bindParms(array($questionId));
+		$result=$this->link->executeSelectQuery();
+		if($result->rowCount())
+			return true;
+		return false;
+	}
+	public function isMCQ($questionId){
+		$this->link->setQuery("SELECT `isMCQ` FROM questions WHERE questionId=?");
+		$this->link->bindParms(array($questionId));
+		$result=$this->link->executeSelectQuery();
+		if($result->rowCount()){
+			$result=$result->fetch();
+			$result=intval($result['isMCQ']);
+			if($result)
+				return true;
+		}
+		return false;
 	}
 }
 ?>

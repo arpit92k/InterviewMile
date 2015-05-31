@@ -16,8 +16,8 @@ class NonMCQQuestions extends Questions{
 	 * @param integer $category_id  
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$category_id=NULL){
-		return parent::addQuestion($title, $description,$category_id);
+	public function addQuestion($title,$description,$owner,$category_id=NULL){
+		return parent::addQuestion($title, $description,$owner,$category_id);
 	}
 	/**
 	 * 
@@ -25,10 +25,9 @@ class NonMCQQuestions extends Questions{
 	 * @param string $answer
 	 * @return integer id of inserted answer 
 	 */
-	public function addAnswer($qusestionId,$answer){
-		$this->link->setQuery("INSERT INTO answers (`questionId`,`answer`) VALUES(?,?)");
-		$ans=array($qid,$ans);
-		$this->link->bindParms($ans);
+	public function addAnswer($qusestionId,$answer,$owner){
+		$this->link->setQuery("INSERT INTO answers (`questionId`,`answer`,`owner`) VALUES(?,?,?)");
+		$this->link->bindParms(array($qid,$ans,$owner));
 		return $this->link->executeInsertQuery();
 	}
 	/**
