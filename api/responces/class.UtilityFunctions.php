@@ -1,0 +1,25 @@
+<?php
+class UtilityFunctions{
+	public static function sendResponce($responce){
+		header('Content-Type: application/json');
+		echo json_encode($responce);
+	}
+	public static function  fix($data){
+		return htmlentities(trim($data));
+	}
+	public static function responceBadRequest(){
+		$responce['error']="Bad Request";
+		UtilityFunctions::sendResponce($responce);
+	}
+	public static function responceUnauthorised(){
+		$responce['error']="Unauthorized operation";
+		UtilityFunctions::sendResponce($responce);
+	}
+	public static function isLoggedIn(){
+		return isset($_SESSION['user']);
+	}
+	public static function getLoggedinUser(){
+		return $_SESSION['user'];
+	}
+}
+?>

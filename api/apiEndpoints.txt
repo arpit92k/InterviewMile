@@ -1,0 +1,27 @@
+/api/question/get 
+POST : 	start		integer	default=0 
+
+/api/question/add
+POST : 	title		string
+		description	string
+		categoryId	int		default=null
+		isMCQ		(send any value if question is MCQ)
+
+/api/answer/get
+POST :	questionId	integer
+		start		integet default=0 (if question is nonMCQ)
+
+/api/answer/add
+POST :	type		string [MCQ/nonMCQ]
+		questionId	integer
+		choice		string (if question is MCQ)
+		isCorrect	(send any value to mark choice correct)
+		answer		string (for nonMCQ question)
+
+/api/category/add
+POST :	category			string
+		parentCategoryId	integer		default=null for base categories
+
+/api/category/get
+POST :	baseCategoryId		integet		default=null from base categories
+		start				integer		default=0
