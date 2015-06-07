@@ -27,7 +27,8 @@ class MCQQuestions extends Questions{
 	public function addChoice($questionID,$choice,$owner,$isCorrect=false){
 		$this->link->setQuery("INSERT INTO mcqChoices(`questionId`,`choice`,`isCorrect`,`owner`) VALUES(?,?,?,?)");
 		$this->link->bindParms(array($questionID,$choice,$isCorrect,$owner));
-		return $this->link->executeInsertQuery();
+		$responce['optionId']=$this->link->executeInsertQuery();
+		return $responce;
 	}
 	/**
 	 * 
@@ -38,10 +39,17 @@ class MCQQuestions extends Questions{
 		$this->link->setQuery("SELECT * FROM mcqChoices WHERE questionId=?");
 		$this->link->bindParms(array($questionId));
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['optionId']=intval($res['optionId']);
+			$result['questionId']=intval($res['questionId']);
+			$result['choice']=$res['choice'];
+			$result['isCorrect']=intval($res['isCorrect'])?true:false;
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
 	}
 }
 ?>

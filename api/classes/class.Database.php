@@ -30,14 +30,14 @@ class Database{
 		$id=null;
 		try {
 			$this->connection->beginTransaction();
-			$this->query->execute();
+			$this->query->execute()or die(print_r($this->query->errorInfo()));
 			$id=$this->connection->lastInsertId();
 			$this->connection->commit();
 		} catch(PDOExecption $e) {
 			$this->connection->rollBack();
 			die( "Something gone wrong :" . $e->getMessage() . "</br>");
 		}
-		return $id;
+		return intval($id);
 	}
 	public function __destruct(){
 		$this->link->closeConnection();

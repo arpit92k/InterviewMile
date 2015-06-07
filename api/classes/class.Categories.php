@@ -13,29 +13,37 @@ class Categories{
 		$this->link=new Database();
 	}
 	/**
-	 * 
+	 * default parent category is 0 means it is base category
 	 * @param string $category
 	 * @param integer $parentCategoryId
 	 * @return integer id of insterted category
 	 */
-	public function addCategory($category,$owner,$parentCategoryId=NULL){
-		$this->link->setQuery("INSERT INTO catrgories(`parentId`,`category`,`owner`) VALUES(?,?,?)");
-		$this->link->bindParms(array($category,$parentCategoryId,$owner));
-		return $this->link->executeInsertQuery();
+	public function addCategory($category,$owner,$parentCategoryId=0){
+		$this->link->setQuery("INSERT INTO  categories(`parentCategoryId`,`category`,`owner`) VALUES(?,?,?)");
+		$this->link->bindParms(array($parentCategoryId,$category,$owner));
+		$id=$this->link->executeInsertQuery();
+		$responce['categoryId']=intval($id);
+		return $responce;
 	}
 	/**
 	 * 
 	 * @param number $start
-	 * @return allay of 10 base categories starting from $start
+	 * @return array of 10 base categories starting from $start
 	 */
 	public function getBaseCategories($start=0){
-		$this->link->setQuery("SELECT * FROM categories WHERE parentId=NULL LIMIT $start,10");
+		$this->link->setQuery("SELECT * FROM categories WHERE parentCategoryId=0 LIMIT $start,10");
 		$this->link->executeSelectQuery();
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['categoryId']=intval($res['categoryId']);
+			$result['parentCategoryId']=intval($res['parentCategoryId']);
+			$result['category']=$res['category'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
 	}
 	/**
 	 * 
@@ -43,13 +51,19 @@ class Categories{
 	 * @return id of goven base category if exists
 	 */
 	public function getBaseCategoryIdByName($baseCategoryName){
-		$this->link->setQuery("SELECT * FROM categories WHERE parentId=NULL and category=?");
+		$this->link->setQuery("SELECT * FROM categories WHERE parentCategoryId=0 and category=?");
 		$this->link->bindParms(array($baseCategoryName));
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['categoryId']=intval($res['categoryId']);
+			$result['parentCategoryId']=intval($res['parentCategoryId']);
+			$result['category']=$res['category'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
 	}
 	/**
 	 * 
@@ -58,13 +72,34 @@ class Categories{
 	 * @return array of 10 subcategories of gievn base category starting from $start
 	 */
 	public function getSubcategories($categoryId,$start=0){
-		$this->link->setQuery("SELECT * FROM categories WHERE parentId=? LIMIT $start,10");
+		$this->link->setQuery("SELECT * FROM categories WHERE parentCategoryId=? LIMIT $start,10");
 		$this->link->bindParms(array($categoryId));
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['categoryId']=intval($res['categoryId']);
+			$result['parentCategoryId']=intval($res['parentCategoryId']);
+			$result['category']=$res['category'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
+	}
+	public function searchCategory($category,$start=0){
+		$this->link->setQuery("SELECT * FROM categories WHERE category LIKE ? LIMIT $start,10");
+		$this->link->bindParms(array("%".$category."%"));
+		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
+		while($res=$qresult->fetch()){
+			$result=array();
+			$result['categoryId']=intval($res['categoryId']);
+			$result['parentCategoryId']=intval($res['parentCategoryId']);
+			$result['category']=$res['category'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
+		}
+		return $responce;
 	}
 	public function isValidCategoryId($categoryId){
 		$this->link->setQuery("SELECT * FROM categories WHERE categoryId=?");

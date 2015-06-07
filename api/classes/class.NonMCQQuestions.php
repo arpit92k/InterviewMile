@@ -25,10 +25,11 @@ class NonMCQQuestions extends Questions{
 	 * @param string $answer
 	 * @return integer id of inserted answer 
 	 */
-	public function addAnswer($qusestionId,$answer,$owner){
+	public function addAnswer($questionId,$answer,$owner){
 		$this->link->setQuery("INSERT INTO answers (`questionId`,`answer`,`owner`) VALUES(?,?,?)");
-		$this->link->bindParms(array($qid,$ans,$owner));
-		return $this->link->executeInsertQuery();
+		$this->link->bindParms(array($questionId,$answer,$owner));
+		$responce['answerId']=$this->link->executeInsertQuery();
+		return $responce;
 	}
 	/**
 	 * 
@@ -38,13 +39,19 @@ class NonMCQQuestions extends Questions{
 	 */
 	public function getAnswers($qusestionId,$start=0){
 		$result=new ArrayObject();
-		$this->link->setQuery("SELECT * FROM answers WHERE qid=? LIMIT $start,10");
-		$this->link->bindParms(array($qid));
+		$this->link->setQuery("SELECT * FROM answers WHERE questionId=? LIMIT $start,10");
+		$this->link->bindParms(array($qusestionId));
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['answerId']=intval($res['answerId']);
+			$result['questionId']=intval($res['questionId']);
+			$result['answer']=$res['answer'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
 	}
 } 
 ?>

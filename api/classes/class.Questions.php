@@ -21,10 +21,12 @@ class Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$owner,$category_id=NULL,$isMCQ=FALSE){
+	public function addQuestion($title,$description,$owner,$category_id=0,$isMCQ=FALSE){
 		$this->link->setQuery("INSERT INTO questions (`categoryId`,`isMCQ`,`title`,`description`,`owner`) VALUES (?,?,?,?,?)");
 		$this->link->bindParms(array($category_id,$isMCQ,$title,$description,$owner));
-		$result=$this->link->executeInsertQuery();
+		$id=$this->link->executeInsertQuery();
+		$responce['questionId']=$id;
+		return $responce;
 	}
 	/**
 	 *
@@ -35,10 +37,36 @@ class Questions{
 		$result=new ArrayObject();
 		$this->link->setQuery("SELECT * FROM questions LIMIT $start,10");
 		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
 		while($res=$qresult->fetch()){
-			$result->append($res);
+			$result=array();
+			$result['questionId']=intval($res['questionId']);
+			$result['categoryId']=intval($res['categoryId']);
+			$result['isMCQ']=intval($res['isMCQ'])?true:false;
+			$result['title']=$res['title'];
+			$result['description']=$res['description'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
 		}
-		return $result;
+		return $responce;
+	}
+	public function searchQuestions($title,$start=0){
+		$result=new ArrayObject();
+		$this->link->setQuery("SELECT * FROM questions where title LIKE ? LIMIT $start,10");
+		$this->link->bindParms(array("%".$title."%"));
+		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
+		while($res=$qresult->fetch()){
+			$result=array();
+			$result['questionId']=intval($res['questionId']);
+			$result['categoryId']=intval($res['categoryId']);
+			$result['isMCQ']=intval($res['isMCQ'])?true:false;
+			$result['title']=$res['title'];
+			$result['description']=$res['description'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
+		}
+		return $responce;
 	}
 	public function isValidQuestionId($questionId){
 		$this->link->setQuery("SELECT * FROM questions WHERE questionId=?");
