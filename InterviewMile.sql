@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.6deb1
+-- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 29, 2015 at 09:17 PM
--- Server version: 5.5.43-0ubuntu0.14.10.1
--- PHP Version: 5.5.12-2ubuntu4.4
+-- Generation Time: Jun 06, 2015 at 11:40 AM
+-- Server version: 5.5.43-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,14 +23,58 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mcqOptions`
+-- Table structure for table `answers`
 --
 
-CREATE TABLE IF NOT EXISTS `mcqOptions` (
-`id` int(11) NOT NULL,
-  `qid` int(11) NOT NULL,
-  `option` varchar(500) NOT NULL,
-  `isCorrect` tinyint(1) NOT NULL DEFAULT '0'
+CREATE TABLE IF NOT EXISTS `answers` (
+  `answerId` int(10) NOT NULL AUTO_INCREMENT,
+  `questionId` int(10) NOT NULL,
+  `answer` varchar(5000) DEFAULT NULL,
+  `owner` int(10) NOT NULL,
+  PRIMARY KEY (`answerId`),
+  KEY `questionId` (`questionId`),
+  KEY `owner` (`owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE IF NOT EXISTS `categories` (
+  `categoryId` int(10) NOT NULL AUTO_INCREMENT,
+  `parentCategoryId` int(10) DEFAULT '0',
+  `category` varchar(100) NOT NULL,
+  `owner` int(10) NOT NULL,
+  PRIMARY KEY (`categoryId`),
+  UNIQUE KEY `parentId_2` (`parentCategoryId`,`category`),
+  KEY `parentId` (`parentCategoryId`),
+  KEY `owner` (`owner`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`categoryId`, `parentCategoryId`, `category`, `owner`) VALUES
+(1, 0, 'none', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mcqChoices`
+--
+
+CREATE TABLE IF NOT EXISTS `mcqChoices` (
+  `optionId` int(10) NOT NULL AUTO_INCREMENT,
+  `questionId` int(10) NOT NULL,
+  `choice` varchar(500) NOT NULL,
+  `isCorrect` tinyint(1) NOT NULL DEFAULT '0',
+  `owner` int(10) NOT NULL,
+  PRIMARY KEY (`optionId`),
+  KEY `questionId` (`questionId`),
+  KEY `owner` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -40,42 +84,68 @@ CREATE TABLE IF NOT EXISTS `mcqOptions` (
 --
 
 CREATE TABLE IF NOT EXISTS `questions` (
-`id` int(11) NOT NULL,
+  `questionId` int(10) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(10) DEFAULT '0',
   `isMCQ` tinyint(1) NOT NULL DEFAULT '0',
   `title` varchar(500) NOT NULL,
-  `description` varchar(5000) DEFAULT NULL
+  `description` varchar(5000) DEFAULT NULL,
+  `owner` int(10) NOT NULL,
+  PRIMARY KEY (`questionId`),
+  KEY `categoryId` (`categoryId`),
+  KEY `owner` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
 --
--- Indexes for dumped tables
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `userId` int(10) NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`userId`, `email`) VALUES
+(1, 'admin@interviewmiles.com');
+
+--
+-- Constraints for dumped tables
 --
 
 --
--- Indexes for table `mcqOptions`
+-- Constraints for table `answers`
 --
-ALTER TABLE `mcqOptions`
- ADD PRIMARY KEY (`id`), ADD KEY `qid` (`qid`);
+ALTER TABLE `answers`
+  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`questionId`) REFERENCES `questions` (`questionId`),
+  ADD CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
 
 --
--- Indexes for table `questions`
+-- Constraints for table `categories`
+--
+ALTER TABLE `categories`
+  ADD CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
+
+--
+-- Constraints for table `mcqChoices`
+--
+ALTER TABLE `mcqChoices`
+  ADD CONSTRAINT `mcqChoices_ibfk_1` FOREIGN KEY (`questionId`) REFERENCES `questions` (`questionId`),
+  ADD CONSTRAINT `mcqChoices_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
+
+--
+-- Constraints for table `questions`
 --
 ALTER TABLE `questions`
- ADD PRIMARY KEY (`id`);
+  ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`),
+  ADD CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
 
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `mcqOptions`
---
-ALTER TABLE `mcqOptions`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `questions`
---
-ALTER TABLE `questions`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
