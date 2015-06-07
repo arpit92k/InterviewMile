@@ -16,8 +16,8 @@ class NonMCQQuestions extends Questions{
 	 * @param integer $category_id  
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$owner,$category_id=NULL){
-		return parent::addQuestion($title, $description,$owner,$category_id);
+	public function addQuestion($title,$description,$owner){
+		return parent::addQuestion($title, $description,$owner);
 	}
 	/**
 	 * 

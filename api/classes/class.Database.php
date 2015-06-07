@@ -39,6 +39,17 @@ class Database{
 		}
 		return intval($id);
 	}
+	public function executeDeleteQuery(){
+		$id=null;
+		try {
+			$this->connection->beginTransaction();
+			$this->query->execute()or die(print_r($this->query->errorInfo()));
+			$this->connection->commit();
+		} catch(PDOExecption $e) {
+			$this->connection->rollBack();
+			die( "Something gone wrong :" . $e->getMessage() . "</br>");
+		}
+	}
 	public function __destruct(){
 		$this->link->closeConnection();
 	}

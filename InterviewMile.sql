@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2015 at 11:40 AM
+-- Generation Time: Jun 08, 2015 at 01:48 AM
 -- Server version: 5.5.43-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS `answers` (
   PRIMARY KEY (`answerId`),
   KEY `questionId` (`questionId`),
   KEY `owner` (`owner`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+
 
 -- --------------------------------------------------------
 
@@ -44,21 +46,15 @@ CREATE TABLE IF NOT EXISTS `answers` (
 
 CREATE TABLE IF NOT EXISTS `categories` (
   `categoryId` int(10) NOT NULL AUTO_INCREMENT,
-  `parentCategoryId` int(10) DEFAULT '0',
+  `parentCategoryId` int(10) NOT NULL DEFAULT '0',
   `category` varchar(100) NOT NULL,
   `owner` int(10) NOT NULL,
   PRIMARY KEY (`categoryId`),
   UNIQUE KEY `parentId_2` (`parentCategoryId`,`category`),
   KEY `parentId` (`parentCategoryId`),
   KEY `owner` (`owner`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
---
--- Dumping data for table `categories`
---
-
-INSERT INTO `categories` (`categoryId`, `parentCategoryId`, `category`, `owner`) VALUES
-(1, 0, 'none', 1);
 
 -- --------------------------------------------------------
 
@@ -75,7 +71,23 @@ CREATE TABLE IF NOT EXISTS `mcqChoices` (
   PRIMARY KEY (`optionId`),
   KEY `questionId` (`questionId`),
   KEY `owner` (`owner`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `questionCategory`
+--
+
+CREATE TABLE IF NOT EXISTS `questionCategory` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `questionId` int(10) NOT NULL,
+  `categoryId` int(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questionId` (`questionId`),
+  KEY `categoryId` (`categoryId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
 
 -- --------------------------------------------------------
 
@@ -85,15 +97,14 @@ CREATE TABLE IF NOT EXISTS `mcqChoices` (
 
 CREATE TABLE IF NOT EXISTS `questions` (
   `questionId` int(10) NOT NULL AUTO_INCREMENT,
-  `categoryId` int(10) DEFAULT '0',
   `isMCQ` tinyint(1) NOT NULL DEFAULT '0',
   `title` varchar(500) NOT NULL,
   `description` varchar(5000) DEFAULT NULL,
   `owner` int(10) NOT NULL,
   PRIMARY KEY (`questionId`),
-  KEY `categoryId` (`categoryId`),
   KEY `owner` (`owner`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
 
 -- --------------------------------------------------------
 
@@ -140,10 +151,16 @@ ALTER TABLE `mcqChoices`
   ADD CONSTRAINT `mcqChoices_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
 
 --
+-- Constraints for table `questionCategory`
+--
+ALTER TABLE `questionCategory`
+  ADD CONSTRAINT `questionCategory_ibfk_1` FOREIGN KEY (`questionId`) REFERENCES `questions` (`questionId`),
+  ADD CONSTRAINT `questionCategory_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`);
+
+--
 -- Constraints for table `questions`
 --
 ALTER TABLE `questions`
-  ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`),
   ADD CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

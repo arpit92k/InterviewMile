@@ -21,9 +21,9 @@ class Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$owner,$category_id=0,$isMCQ=FALSE){
-		$this->link->setQuery("INSERT INTO questions (`categoryId`,`isMCQ`,`title`,`description`,`owner`) VALUES (?,?,?,?,?)");
-		$this->link->bindParms(array($category_id,$isMCQ,$title,$description,$owner));
+	public function addQuestion($title,$description,$owner,$isMCQ=FALSE){
+		$this->link->setQuery("INSERT INTO questions (`isMCQ`,`title`,`description`,`owner`) VALUES (?,?,?,?)");
+		$this->link->bindParms(array($isMCQ,$title,$description,$owner));
 		$id=$this->link->executeInsertQuery();
 		$responce['questionId']=$id;
 		return $responce;
@@ -41,7 +41,7 @@ class Questions{
 		while($res=$qresult->fetch()){
 			$result=array();
 			$result['questionId']=intval($res['questionId']);
-			$result['categoryId']=intval($res['categoryId']);
+			//$result['categoryId']=intval($res['categoryId']);
 			$result['isMCQ']=intval($res['isMCQ'])?true:false;
 			$result['title']=$res['title'];
 			$result['description']=$res['description'];
@@ -59,7 +59,7 @@ class Questions{
 		while($res=$qresult->fetch()){
 			$result=array();
 			$result['questionId']=intval($res['questionId']);
-			$result['categoryId']=intval($res['categoryId']);
+			//$result['categoryId']=intval($res['categoryId']);
 			$result['isMCQ']=intval($res['isMCQ'])?true:false;
 			$result['title']=$res['title'];
 			$result['description']=$res['description'];
@@ -67,6 +67,44 @@ class Questions{
 			array_push($responce,$result);
 		}
 		return $responce;
+	}
+	public function addtag($questionId,$tagId){
+		$this->link->setQuery("INSERT INTO questionCategory(`questionId`,`categoryId`) VALUES(?,?)");
+		$this->link->bindParms(array($questionId,$tagId));
+		$this->link->executeInsertQuery();
+		$responce['result']="sucess";
+		return $responce;
+	}
+	public function removetag($questionId,$tagId){
+		$this->link->setQuery("DELETE FROM questionCategory WHERE questionId=? AND categoryId=?");
+		$this->link->bindParms(array($questionId,$tagId));
+		$this->link->executeDeleteQuery();
+		$responce['result']="sucess";
+		return $responce;
+	}
+	public function getTags($questionId){
+		$this->link->setQuery("SELECT * FROM questionCategory where questionId=?");
+		$this->link->bindParms(array($questionId));
+		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
+		while($res=$qresult->fetch()){
+			$result=array();
+			$result['questionId']=intval($res['questionId']);
+			$result['tagId']=intval($res['categoryId']);
+			$result['tag']=$this->getTagName($result['tagId']);
+			array_push($responce,$result);
+		}
+		return $responce;
+	}
+	private function getTagName($tagId){
+		$this->link->setQuery("SELECT * from categories WHERE categoryId=?");
+		$this->link->bindParms(array($tagId));
+		$qresult=$this->link->executeSelectQuery();
+		if($qresult->rowCount()>0){
+			$result=$qresult->fetch();
+			return $result['category'];
+		}
+		return null;
 	}
 	public function isValidQuestionId($questionId){
 		$this->link->setQuery("SELECT * FROM questions WHERE questionId=?");

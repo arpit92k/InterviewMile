@@ -14,8 +14,8 @@ class MCQQuestions extends Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$owner,$category_id=NULL){
-		parent::addQuestion($title, $description,$category_id,true);
+	public function addQuestion($title,$description,$owner){
+		parent::addQuestion($title, $description,$owner,true);
 	}
 	/**
 	 * 

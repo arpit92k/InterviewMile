@@ -26,21 +26,11 @@ class QuestionHandler{
 		if(isset($postData['title'])&&isset($postData['description'])){
 			$title=UtilityFunctions::fix($postData['title']);
 			$description=UtilityFunctions::fix($postData['description']);
-			$categoryId=0;
 			$isMCQ=false;
-			if(isset($postData['categoryId'])){
-				$categoryId=intval(UtilityFunctions::fix($postData['categoryId']));
-				$categories=new Categories();
-				if(!$categories->isValidCategoryId($categoryId)){
-					$responce['error']="Invalid Category Id";
-					UtilityFunctions::sendResponce($responce);
-					return;
-				}
-			}
 			if(isset($postData['isMCQ']))
 				$isMCQ=true;
 			$questions=new Questions();
-			$responce=$questions->addQuestion($title, $description, UtilityFunctions::getLoggedinUser(),$categoryId,$isMCQ);
+			$responce=$questions->addQuestion($title, $description, UtilityFunctions::getLoggedinUser(),$isMCQ);
 			UtilityFunctions::sendResponce($responce);
 		}
 		else
@@ -54,6 +44,68 @@ class QuestionHandler{
 			UtilityFunctions::sendResponce($responce);
 		}
 		else
+			UtilityFunctions::responceBadRequest();
+	}
+	public function addTag($postData){
+		if(isset($postData['questionId'])&&isset($postData['tagId'])){
+			$questionId=UtilityFunctions::fix($postData['questionId']);
+			$tagId=UtilityFunctions::fix($postData['tagId']);
+			$tags=new Categories();
+			$questions=new Questions();
+			if(!$tags->isValidCategoryId($tagId)){
+				$responce['error']="Invalid tag ID";
+				UtilityFunctions::sendResponce($responce);
+			}
+			elseif (!$questions->isValidQuestionId($questionId)){
+				$responce['error']="Invalid question ID";
+				UtilityFunctions::sendResponce($responce);
+			}
+			else{
+				$responce=$questions->addtag($questionId, $tagId);
+				UtilityFunctions::sendResponce($responce);
+			}
+		}
+		else{
+			UtilityFunctions::responceBadRequest();
+		}
+	}
+	public function removeTag($postData){
+		if (isset($postData['questionId'])&&isset($postData['tagId'])){
+			$questionId=UtilityFunctions::fix($postData['questionId']);
+			$tagId=UtilityFunctions::fix($postData['tagId']);
+			$tags=new Categories();
+			$questions=new Questions();
+			if(!$tags->isValidCategoryId($tagId)){
+				$responce['error']="Invalid tag ID";
+				UtilityFunctions::sendResponce($responce);
+			}
+			elseif (!$questions->isValidQuestionId($questionId)){
+				$responce['error']="Invalid question ID";
+				UtilityFunctions::sendResponce($responce);
+			}
+			else{
+				$responce=$questions->removetag($questionId, $tagId);
+				UtilityFunctions::sendResponce($responce);
+			}
+		}
+		else {
+			UtilityFunctions::responceBadRequest();
+		}
+	}
+	public function getTags($postData){
+		if(isset($postData['questionId'])){
+			$questionId=UtilityFunctions::fix($postData['questionId']);
+			$questions=new Questions();
+			if($questions->isValidQuestionId($questionId)){
+				$responce=$questions->getTags($questionId);
+				UtilityFunctions::sendResponce($responce);
+			}
+			else {
+				$responce['error']="Invalid Question ID";
+				UtilityFunctions::sendResponce($responce);
+			}
+		}
+		else 
 			UtilityFunctions::responceBadRequest();
 	}
 } 

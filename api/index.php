@@ -25,15 +25,18 @@ function handleRequest(){
 				else
 					UtilityFunctions::responceUnauthorised();
 			}
-			elseif ($_GET['query']=="get"){
+			elseif ($_GET['query']=="get")
 				$questions->listQuestions($_POST);
-			}
-			elseif ($_GET['query']=="find"){
+			elseif ($_GET['query']=="find")
 				$questions->findQuestions($_POST);
-			}
-			else{
+			elseif ($_GET['query']=="addtag")
+				$questions->addTag($_POST);
+			elseif ($_GET['query']=="deltag")
+				$questions->removeTag($_POST);
+			elseif ($_GET['query']=="gettags")
+				$questions->getTags($_POST);
+			else
 				UtilityFunctions::responceBadRequest();
-			}
 		}
 		elseif ($_GET['object']=="answer"){
 			$answer=new AnswerHandler();
