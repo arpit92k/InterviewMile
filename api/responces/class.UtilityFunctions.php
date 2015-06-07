@@ -16,10 +16,10 @@ class UtilityFunctions{
 		UtilityFunctions::sendResponce($responce);
 	}
 	public static function isLoggedIn(){
-		return isset($_SESSION['user']);
+		return isset($_SESSION['userId']);
 	}
 	public static function getLoggedinUser(){
-		return $_SESSION['user'];
+		return $_SESSION['userId'];
 	}
 }
 ?>

@@ -10,6 +10,7 @@ include_once 'responces/class.UtilityFunctions.php';
 include_once 'responces/class.QuestionHandler.php';
 include_once 'responces/class.AnswerHandler.php';
 include_once 'responces/class.CategoryHandler.php';
+include_once 'responces/MCQChoiceHandler.php';
 function handleRequest(){
 	if(isset($_GET['object'])){
 		if(!isset($_GET['query'])){
@@ -26,6 +27,9 @@ function handleRequest(){
 			}
 			elseif ($_GET['query']=="get"){
 				$questions->listQuestions($_POST);
+			}
+			elseif ($_GET['query']=="find"){
+				$questions->findQuestions($_POST);
 			}
 			else{
 				UtilityFunctions::responceBadRequest();
@@ -45,17 +49,33 @@ function handleRequest(){
 			else
 				UtilityFunctions::responceBadRequest();
 		}
+		elseif ($_GET['object']=="choice"){
+			$choice=new MCQChoiceHandler();
+			if ($_GET['query']=="get")
+				$choice->getChoices($_POST);
+			elseif ($_GET['query']=="add"){
+				if (UtilityFunctions::isLoggedIn())
+					$choice->addChoice($_POST);
+				else 
+					UtilityFunctions::responceUnauthorised();
+			}
+			else
+				UtilityFunctions::responceBadRequest();
+		}
 		elseif ($_GET['object']=="category"){
 			$categories=new CategoryHandler();
 			if($_GET['query']=="add"){
-				if($_SESSION['user']=="admin"){
+				if(UtilityFunctions::getLoggedinUser()==1){
 					$categories->addCategory($_POST);
 				}
 				else
 					UtilityFunctions::responceUnauthorised();
 			}
 			elseif ($_GET['query']=="get"){
-				$categories->getCategories($postData);
+				$categories->getCategories($_POST);
+			}
+			elseif ($_GET['query']=="find"){
+				$categories->findCategories($_POST);
 			}
 			else
 				UtilityFunctions::responceBadRequest();

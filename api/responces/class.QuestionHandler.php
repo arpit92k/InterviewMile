@@ -26,7 +26,7 @@ class QuestionHandler{
 		if(isset($postData['title'])&&isset($postData['description'])){
 			$title=UtilityFunctions::fix($postData['title']);
 			$description=UtilityFunctions::fix($postData['description']);
-			$categoryId=null;
+			$categoryId=0;
 			$isMCQ=false;
 			if(isset($postData['categoryId'])){
 				$categoryId=intval(UtilityFunctions::fix($postData['categoryId']));
@@ -40,7 +40,17 @@ class QuestionHandler{
 			if(isset($postData['isMCQ']))
 				$isMCQ=true;
 			$questions=new Questions();
-			$responce=$questions->addQuestion($title, $description,$_SESSION['user']);
+			$responce=$questions->addQuestion($title, $description, UtilityFunctions::getLoggedinUser(),$categoryId,$isMCQ);
+			UtilityFunctions::sendResponce($responce);
+		}
+		else
+			UtilityFunctions::responceBadRequest();
+	}
+	public function findQuestions($postData){
+		if(isset($postData['title'])){
+			$title=UtilityFunctions::fix($postData['title']);
+			$questions=new Questions();
+			$responce=$questions->searchQuestions($title);
 			UtilityFunctions::sendResponce($responce);
 		}
 		else
