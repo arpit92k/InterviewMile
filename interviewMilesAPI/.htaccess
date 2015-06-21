@@ -1,0 +1,11 @@
+# Turn on the rewrite engine
+Options +FollowSymlinks
+RewriteEngine on
+ 
+# Request routing
+#RewriteRule "^([a-zA-Z]*)/([a-zA-Z]*)/"   "index.php?object=$1&query=$2" [nc,qsa]
+#RewriteRule "^([a-zA-Z]*)/([a-zA-Z]*)"   "index.php?object=$1&query=$2" [nc,qsa]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*)$ index.php?request=$1 [QSA,NC,L]
