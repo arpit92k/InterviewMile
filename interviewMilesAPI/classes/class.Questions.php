@@ -50,6 +50,38 @@ class Questions{
 		}
 		return $responce;
 	}
+	public function getQuestionsById($questionId){
+		$result=new ArrayObject();
+		$this->link->setQuery("SELECT * FROM questions WHERE questionId = ?");
+		$this->link->bindParms(array($questionId));
+		$qresult=$this->link->executeSelectQuery();
+		$res=$qresult->fetch();
+		$result=array();
+		$result['questionId']=intval($res['questionId']);
+		//$result['categoryId']=intval($res['categoryId']);
+		$result['isMCQ']=intval($res['isMCQ'])?true:false;
+		$result['title']=$res['title'];
+		$result['description']=$res['description'];
+		$result['owner']=intval($res['owner']);
+		return $result;
+	}
+	public function getQuestionsByCategory($categoryId,$start=0){
+		$result=new ArrayObject();
+		$this->link->setQuery("SELECT * FROM questions WHERE questionId in(SELECT questionId FROM `questionCategory` WHERE categoryId=?) LIMIT $start,10");
+		$this->link->bindParms(array($categoryId));
+		$qresult=$this->link->executeSelectQuery();
+		$responce=array();
+		while($res=$qresult->fetch()){
+			$result=array();
+			$result['questionId']=intval($res['questionId']);
+			$result['isMCQ']=intval($res['isMCQ'])?true:false;
+			$result['title']=$res['title'];
+			$result['description']=$res['description'];
+			$result['owner']=intval($res['owner']);
+			array_push($responce,$result);
+		}
+		return $responce;
+	}
 	public function searchQuestions($title,$start=0){
 		$result=new ArrayObject();
 		$this->link->setQuery("SELECT * FROM questions where title LIKE ? LIMIT $start,10");
