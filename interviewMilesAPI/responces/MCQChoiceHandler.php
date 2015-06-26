@@ -1,42 +1,36 @@
 <?php
 class MCQChoiceHandler{
 	public function addChoice($postData){
-		if(isset($postData['questionId'])&&isset($postData['choice'])){
-			$mcqQuestions=new MCQQuestions();
-			$questionId=intval(UtilityFunctions::fix($postData['questionId']));
-			if($mcqQuestions->isValidQuestionId($questionId)&&$mcqQuestions->isMCQ($questionId)){
-				$choice=UtilityFunctions::fix($postData['choice']);
-				$isCorrect=false;
-				if(isset($postData['isCorrect']))
-					$isCorrect=true;
-				$owner=UtilityFunctions::getLoggedinUser();
-				$result=$mcqQuestions->addChoice($questionId, $choice, $owner, $isCorrect);
-				UtilityFunctions::sendResponce($result);
-			}
-			else {
-				$responce['error']="Invalid Question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
+		$mcqQuestions=new MCQQuestions();
+		$questionId=intval(UtilityFunctions::fix($postData->questionId));
+		if($mcqQuestions->isValidQuestionId($questionId)&&$mcqQuestions->isMCQ($questionId)){
+			$choice=UtilityFunctions::fix($postData->choice);
+			$isCorrect=false;
+			if(property_exists($postData,'isCorrect')&&is_bool($postData->isCorrect))
+				$isCorrect=$postData->isCorrect;
+			$owner=UtilityFunctions::getLoggedinUser();
+			$result=$mcqQuestions->addChoice($questionId, $choice, $owner, $isCorrect);
+			return $result;
 		}
-		else
-			UtilityFunctions::responceBadRequest();
+		else {
+			$responce['error']="Invalid Question ID";
+			return $responce;
+		}
 	}
 	public function getChoices($postData){
-		if(isset($postData['questionId'])){
-			$mcqQuestions=new MCQQuestions();
-			$questionId=intval(UtilityFunctions::fix($postData['questionId']));
-			if($mcqQuestions->isValidQuestionId($questionId) && $mcqQuestions->isMCQ($questionId)){
-				$responce=$mcqQuestions->getChoices($questionId);
-				UtilityFunctions::sendResponce($responce);
-				return;
-			}
-			else {
-				$responce['error']="Invalid Question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
+		$mcqQuestions=new MCQQuestions();
+		$questionId=intval(UtilityFunctions::fix($postData->questionId));
+		if($mcqQuestions->isValidQuestionId($questionId) && $mcqQuestions->isMCQ($questionId)){
+			$start=0;
+			if(property_exists($postData,'start'))
+				$start=intval($postData->start);
+			$responce=$mcqQuestions->getChoices($questionId,$start);
+			return $responce;
 		}
-		else 
-			UtilityFunctions::responceBadRequest();
+		else {
+			$responce['error']="Invalid Question ID";
+			return $responce;
+		}
 	}
 }
 ?>

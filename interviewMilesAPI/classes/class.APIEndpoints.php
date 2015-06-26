@@ -55,5 +55,41 @@ class APIEndpoints extends API{
 			$this->_response($res,400);
 		}
 	}
+	public function answer($method,$verb,$args,$dataObj){
+		$ans=new AnswerHandler();
+		if($method=="GET"&&$verb="get"&&count($args)>0){
+			$dataObj->questionId=$args[0];
+			$dataObj->start=0;
+			if(count($args)>1)
+				$dataObj->start=$args[1];
+			$this->_response($ans->getAnswers($dataObj));
+		}
+		else if($method=="POST"&&$verb="add"&&property_exists($dataObj, 'answer')&&property_exists($dataObj, 'questionId')){
+			$this->_response($ans->addAnswer($dataObj));
+		}
+		else{
+			$res=array();
+			$res['error']='Bad Request';
+			$this->_response($res,400);
+		}
+	}
+	public function choice($method,$verb,$args,$dataObj){
+		$choice=new MCQChoiceHandler();
+		if($method=="GET"&&$verb="get"&&count($args)>0){
+			$dataObj->questionId=$args[0];
+			$dataObj->start=0;
+			if(count($args)>1)
+				$dataObj->start=$args[1];
+			$this->_response($choice->getChoices($dataObj));
+		}
+		else if($method=="POST"&&$verb="add"&&property_exists($dataObj, 'choice')&&property_exists($dataObj, 'questionId')){
+			$this->_response($choice->addChoice($dataObj));
+		}
+		else{
+			$res=array();
+			$res['error']='Bad Request';
+			$this->_response($res,400);
+		}
+	}
 }
 ?>

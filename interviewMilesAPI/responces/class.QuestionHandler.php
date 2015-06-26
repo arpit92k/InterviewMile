@@ -33,8 +33,8 @@ class QuestionHandler{
 		if(property_exists($data, 'description'))
 			$description=UtilityFunctions::fix($data->description);
 		$isMCQ=false;
-		if(property_exists($data, 'isMCQ'))
-			$isMCQ=boolval($data->isMCQ);
+		if(property_exists($data, 'isMCQ')&&is_bool($data->isMCQ))
+			$isMCQ=$data->isMCQ;
 		$categoryId=0;
 		if(property_exists($data,'categoryID')){
 			$categoryId=intval(UtilityFunctions::fix($data->categoryID));

@@ -23,5 +23,12 @@ class UtilityFunctions{
 		//return $_SESSION['userId'];
 		return 1;
 	}
+	public static function has_property($obj,$property){
+		foreach ($obj as $object){
+			if(!property_exists($object, $property))
+				return false;
+		} 
+		return true;
+	}
 }
 ?>

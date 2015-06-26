@@ -11,6 +11,7 @@ include_once 'responces/class.AnswerHandler.php';
 include_once 'responces/class.CategoryHandler.php';
 include_once 'responces/class.QuestionHandler.php';
 include_once 'responces/class.UtilityFunctions.php';
+include_once 'responces/MCQChoiceHandler.php';
 
 $api=new APIEndpoints($_REQUEST['request']);
 

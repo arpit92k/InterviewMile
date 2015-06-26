@@ -35,8 +35,8 @@ class MCQQuestions extends Questions{
 	 * @param int $questionId
 	 * @return array containing choices of given question 
 	 */
-	public function getChoices($questionId){
-		$this->link->setQuery("SELECT * FROM mcqChoices WHERE questionId=?");
+	public function getChoices($questionId,$start=0){
+		$this->link->setQuery("SELECT * FROM mcqChoices WHERE questionId=? LIMIT $start,10");
 		$this->link->bindParms(array($questionId));
 		$qresult=$this->link->executeSelectQuery();
 		$responce=array();

@@ -1,42 +1,35 @@
 <?php
 class AnswerHandler{
-	public function addAnswer($postData){
-		if(isset($postData['questionId']) && isset($postData['answer'])){
-			$nonMcqQuestion=new NonMCQQuestions();
-			$questionId=intval(UtilityFunctions::fix($postData['questionId']));
-			if($nonMcqQuestion->isValidQuestionId($questionId)&&(!$nonMcqQuestion->isMCQ($questionId))){
-				$answer=UtilityFunctions::fix($postData['answer']);
-				$owner=UtilityFunctions::getLoggedinUser();
-				$result=$nonMcqQuestion->addAnswer($questionId, $answer, $owner);
-				UtilityFunctions::sendResponce($result);
-			}
-			else {
-				$responce['error']="Invalid Question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
+	public function addAnswer($data){
+		$nonMcqQuestion=new NonMCQQuestions();
+		$questionId=intval(UtilityFunctions::fix($data->questionId));
+		if($nonMcqQuestion->isValidQuestionId($questionId)&&(!$nonMcqQuestion->isMCQ($questionId))){
+			$answer=UtilityFunctions::fix($data->answer);
+			$owner=UtilityFunctions::getLoggedinUser();
+			$result=$nonMcqQuestion->addAnswer($questionId, $answer, $owner);
+			return $result;
 		}
-		else
-			UtilityFunctions::responceBadRequest();
+		else {
+			$responce['error']="Invalid Question ID";
+			return $responce;
+		}
 	}
-	public function getAnswers($postData){
-		if(isset($postData['questionId'])){
+	public function getAnswers($data){
+		$questionId=intval(UtilityFunctions::fix($data->questionId));		
+		$question=new NonMCQQuestions();
+		if($question->isValidQuestionId($questionId)&&(!$question->isMCQ($questionId))){
+			$start=0;
+			if(property_exists($data,'start'))
+				$start=intval(UtilityFunctions::fix($data->start));
 			$question=new NonMCQQuestions();
-			$questionId=UtilityFunctions::fix($postData['questionId']);
-			if($question->isValidQuestionId($questionId)&&(!$question->isMCQ($questionId))){
-				$start=0;
-				if(isset($postData['start']))
-					$start=intval(UtilityFunctions::fix($postData['start']));
-				$question=new NonMCQQuestions();
-				$responce=$question->getAnswers($questionId,$start);
-				UtilityFunctions::sendResponce($responce);
-			}
-			else{
-				$responce['error']="Invalid Question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
+			$responce=$question->getAnswers($questionId,$start);
+			return $responce;
 		}
-		else
-			UtilityFunctions::responceBadRequest();
+		else{
+			$responce['error']="Invalid Question ID";
+			return $responce;
+		}
+		
 	}
 }
 ?>
