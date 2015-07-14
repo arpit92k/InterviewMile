@@ -100,18 +100,26 @@ class Questions{
 		}
 		return $responce;
 	}
+	public function hastag($questionId,$tagId){
+		$this->link->setQuery("SELECT * FROM questionCategory where questionId=? and categoryId=?");
+		$this->link->bindParms(array($questionId,$tagId));
+		$qresult=$this->link->executeSelectQuery();
+		if($qresult->rowCount()>0)
+			return true;
+		return false;
+	}
 	public function addtag($questionId,$tagId){
 		$this->link->setQuery("INSERT INTO questionCategory(`questionId`,`categoryId`) VALUES(?,?)");
 		$this->link->bindParms(array($questionId,$tagId));
 		$this->link->executeInsertQuery();
-		$responce['result']="sucess";
+		$responce['result']="success";
 		return $responce;
 	}
 	public function removetag($questionId,$tagId){
 		$this->link->setQuery("DELETE FROM questionCategory WHERE questionId=? AND categoryId=?");
 		$this->link->bindParms(array($questionId,$tagId));
 		$this->link->executeDeleteQuery();
-		$responce['result']="sucess";
+		$responce['result']="success";
 		return $responce;
 	}
 	public function getTags($questionId){

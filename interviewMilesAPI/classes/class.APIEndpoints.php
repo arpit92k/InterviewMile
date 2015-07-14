@@ -28,6 +28,12 @@ class APIEndpoints extends API{
 		if($method=="POST"&&$verb=="add"&&property_exists($dataObj,'title')){
 			$this->_response($que->addQusestion($dataObj));
 		}
+		else if ($method=="POST"&&$verb=="addTag"&&property_exists($dataObj,'tagId')&&property_exists($dataObj,'questionId')){
+			$this->_response($que->addTag($dataObj));
+		}
+		else if ($method=="POST"&&$verb=="removeTag"&&property_exists($dataObj,'tagId')&&property_exists($dataObj,'questionId')){
+			$this->_response($que->removeTag($dataObj));
+		}
 		else if($method=="GET"&&$verb=="getAll"){
 			if(count($args)>0)
 				$dataObj->start=$args[0];
@@ -45,9 +51,13 @@ class APIEndpoints extends API{
 				$dataObj->start=$args[1];
 			$this->_response($que->findQuestionByCategory($dataObj));
 		}
-		else if($method=="GET"&&$verb="get"&&count($args)>0){
+		else if($method=="GET"&&$verb=="get"&&count($args)>0){
 			$dataObj->questionId=$args[0];
 			$this->_response($que->getQuestion($dataObj));
+		}
+		else if($method=="GET"&&$verb=="getTags"&&count($args)>0&&is_numeric($args[0])){
+			$dataObj->questionId=$args[0];
+			$this->_response($que->getTags($dataObj));
 		}
 		else{
 			$res=array();

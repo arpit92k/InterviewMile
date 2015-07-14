@@ -67,67 +67,48 @@ class QuestionHandler{
 		$questions=new Questions();
 		return $questions->getQuestionsByCategory($categoryId,$start);
 	}
-	public function addTag($postData){
-		if(isset($postData['questionId'])&&isset($postData['tagId'])){
-			$questionId=UtilityFunctions::fix($postData['questionId']);
-			$tagId=UtilityFunctions::fix($postData['tagId']);
-			$tags=new Categories();
-			$questions=new Questions();
-			if(!$tags->isValidCategoryId($tagId)){
-				$responce['error']="Invalid tag ID";
-				UtilityFunctions::sendResponce($responce);
-			}
-			elseif (!$questions->isValidQuestionId($questionId)){
-				$responce['error']="Invalid question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
-			else{
-				$responce=$questions->addtag($questionId, $tagId);
-				UtilityFunctions::sendResponce($responce);
-			}
-		}
-		else{
-			UtilityFunctions::responceBadRequest();
-		}
+	public function addTag($dataObj){
+		$questionId=intval($dataObj->questionId);
+		$tagId=intval($dataObj->tagId);
+		$tags=new Categories();
+		$questions=new Questions();
+		$responce=array();
+		if(!$tags->isValidCategoryId($tagId))
+			$responce['error']="Invalid tag ID";
+		elseif (!$questions->isValidQuestionId($questionId))
+			$responce['error']="Invalid question ID";
+		else if($questions->hastag($questionId, $tagId))
+			$responce['error']="Tag already added";
+		else
+			$responce=$questions->addtag($questionId, $tagId);
+		
+		return $responce;
 	}
-	public function removeTag($postData){
-		if (isset($postData['questionId'])&&isset($postData['tagId'])){
-			$questionId=UtilityFunctions::fix($postData['questionId']);
-			$tagId=UtilityFunctions::fix($postData['tagId']);
-			$tags=new Categories();
-			$questions=new Questions();
-			if(!$tags->isValidCategoryId($tagId)){
-				$responce['error']="Invalid tag ID";
-				UtilityFunctions::sendResponce($responce);
-			}
-			elseif (!$questions->isValidQuestionId($questionId)){
-				$responce['error']="Invalid question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
-			else{
-				$responce=$questions->removetag($questionId, $tagId);
-				UtilityFunctions::sendResponce($responce);
-			}
-		}
-		else {
-			UtilityFunctions::responceBadRequest();
-		}
+	public function removeTag($dataObj){
+		$questionId=intval($dataObj->questionId);
+		$tagId=intval($dataObj->tagId);
+		$tags=new Categories();
+		$questions=new Questions();
+		$responce=array();
+		if(!$tags->isValidCategoryId($tagId))
+			$responce['error']="Invalid tag ID";
+		elseif (!$questions->isValidQuestionId($questionId))
+			$responce['error']="Invalid question ID";
+		elseif (!$questions->hastag($questionId, $tagId))
+			$responce['error']="Tag was never added";
+		else
+			$responce=$questions->removetag($questionId, $tagId);
+		return $responce;
 	}
-	public function getTags($postData){
-		if(isset($postData['questionId'])){
-			$questionId=UtilityFunctions::fix($postData['questionId']);
-			$questions=new Questions();
-			if($questions->isValidQuestionId($questionId)){
-				$responce=$questions->getTags($questionId);
-				UtilityFunctions::sendResponce($responce);
-			}
-			else {
-				$responce['error']="Invalid Question ID";
-				UtilityFunctions::sendResponce($responce);
-			}
-		}
+	public function getTags($dataObj){
+		$questionId=intval($dataObj->questionId);
+		$questions=new Questions();
+		$responce=array();
+		if($questions->isValidQuestionId($questionId))
+			$responce=$questions->getTags($questionId);
 		else 
-			UtilityFunctions::responceBadRequest();
+			$responce['error']="Invalid Question ID";
+		return $responce;
 	}
 } 
 ?>
