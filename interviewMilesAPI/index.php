@@ -7,11 +7,13 @@ include_once 'classes/class.Categories.php';
 include_once 'classes/class.Questions.php';
 include_once 'classes/class.MCQQuestions.php';
 include_once 'classes/class.NonMCQQuestions.php';
+include_once 'classes/class.UserManager.php';
 include_once 'responces/class.AnswerHandler.php';
 include_once 'responces/class.CategoryHandler.php';
 include_once 'responces/class.QuestionHandler.php';
 include_once 'responces/class.UtilityFunctions.php';
-include_once 'responces/MCQChoiceHandler.php';
+include_once 'responces/class.MCQChoiceHandler.php';
+include_once 'responces/class.UserHandler.php';
 
 $api=new APIEndpoints($_REQUEST['request']);
 

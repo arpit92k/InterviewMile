@@ -101,5 +101,19 @@ class APIEndpoints extends API{
 			$this->_response($res,400);
 		}
 	}
+	public function user($method,$verb,$args,$dataObj){
+		$userhandler=new UserHandler();
+		if($method=="POST"&&$verb=="login"&&property_exists($dataObj, 'email')&&property_exists($dataObj, 'password'))
+			$this->_response($userhandler->login($dataObj));
+		else if($method=="POST"&&$verb=="register"&&property_exists($dataObj, 'name')&&property_exists($dataObj, 'email')&&property_exists($dataObj, 'password'))
+			$this->_response($userhandler->register($dataObj));
+		else if ($method=='GET'&&$verb=="logout")
+			$this->_response($userhandler->logout());
+		else{
+			$res=array();
+			$res['error']='Bad Request';
+			$this->_response($res,400);	
+		}
+	}
 }
 ?>
