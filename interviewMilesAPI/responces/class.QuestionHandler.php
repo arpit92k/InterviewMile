@@ -44,8 +44,14 @@ class QuestionHandler{
 				return $responce;
 			}
 		}
+		$difficulty=2.5;
+		if(property_exists($data, "difficulty")){
+			$difficulty=doubleval($data->difficulty);
+			if($difficulty<0 || $difficulty>5)
+				$difficulty=2.5;
+		}
 		$questions=new Questions();
-		$responce=$questions->addQuestion($title, $description, UtilityFunctions::getLoggedinUser(),$isMCQ);
+		$responce=$questions->addQuestion($title, $description, UtilityFunctions::getLoggedinUser(),$difficulty,$isMCQ);
 		if($categoryId)
 			$questions->addtag($responce['questionId'],$categoryId);
 		return $responce;

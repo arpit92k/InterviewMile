@@ -21,9 +21,9 @@ class Questions{
 	 * @param integer $category_id
 	 * @return string id of inserted category
 	 */
-	public function addQuestion($title,$description,$owner,$isMCQ=FALSE){
-		$this->link->setQuery("INSERT INTO questions (`isMCQ`,`title`,`description`,`owner`) VALUES (?,?,?,?)");
-		$this->link->bindParms(array($isMCQ,$title,$description,$owner));
+	public function addQuestion($title,$description,$owner,$difficulty=2.5,$isMCQ=FALSE){
+		$this->link->setQuery("INSERT INTO questions (`isMCQ`,`title`,`description`,`owner`,`difficulty`) VALUES (?,?,?,?,?)");
+		$this->link->bindParms(array($isMCQ,$title,$description,$owner,$difficulty));
 		$id=$this->link->executeInsertQuery();
 		$responce['questionId']=$id;
 		return $responce;
