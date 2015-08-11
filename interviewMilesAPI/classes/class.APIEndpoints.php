@@ -95,6 +95,9 @@ class APIEndpoints extends API{
 		else if($method=="POST"&&$verb="add"&&property_exists($dataObj, 'choice')&&property_exists($dataObj, 'questionId')){
 			$this->_response($choice->addChoice($dataObj));
 		}
+		else if($method=="POST"&&$verb="addMany"&&property_exists($dataObj, 'choices')&&property_exists($dataObj, 'questionId')){
+			$this->_response($choice->addChoices($dataObj));
+		}
 		else{
 			$res=array();
 			$res['error']='Bad Request';

@@ -17,6 +17,27 @@ class MCQChoiceHandler{
 			return $responce;
 		}
 	}
+	public function addChoices($postData){
+		$mcqQuestions=new MCQQuestions();
+		$questionId=intval(UtilityFunctions::fix($postData->questionId));
+		$result=array();
+		if($mcqQuestions->isValidQuestionId($questionId)&&$mcqQuestions->isMCQ($questionId)){
+			foreach ($postData->choices as $choice){
+				$choiceval=UtilityFunctions::fix($choice->choice);
+				$isCorrect=false;
+				if(property_exists($choice,'isCorrect')&&is_bool($choice->isCorrect))
+					$isCorrect=$choice->isCorrect;
+				$owner=UtilityFunctions::getLoggedinUser();
+				$resultval=$mcqQuestions->addChoice($questionId, $choiceval, $owner, $isCorrect);
+				array_push($result, $resultval);
+			}
+			return $result;
+		}
+		else {
+			$responce['error']="Invalid Question ID";
+			return $responce;
+		}
+	}
 	public function getChoices($postData){
 		$mcqQuestions=new MCQQuestions();
 		$questionId=intval(UtilityFunctions::fix($postData->questionId));
